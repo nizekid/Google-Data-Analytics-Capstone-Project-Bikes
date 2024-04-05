@@ -1,0 +1,101 @@
+--CHECKING THE WHOLE tripdata_2023
+SELECT *
+FROM tripdata_2023
+
+--COUNTING NUMBER OF ROW OF THE COMBINED DATA 
+
+SELECT COUNT(*) AS total_number_rows 
+FROM tripdata_2023
+
+--CHECKING THE LENGTH OF THE PRIMARY KEY [ride_id]
+SELECT 
+	COUNT(DISTINCT ride_id) AS total_count,
+	LEN(ride_id) AS num_characters
+FROM tripdata_2023
+GROUP BY
+	LEN(ride_id) 
+
+--COUNTING THE NUMBER OF DUPLICATES  
+SELECT 
+	ride_id,
+	COUNT(*) AS id_duplicate
+FROM 
+	tripdata_2023
+GROUP BY 
+	ride_id
+HAVING 
+	COUNT(*) > 1 
+
+
+-- COUNTING ALL THE NULL VALUES IN EACH COLUMNS 
+
+SELECT
+  COUNT(*) AS total_row,
+  SUM(CASE WHEN ride_id IS NULL THEN 1 ELSE 0 END) AS ride_id_nulls,
+  SUM(CASE WHEN rideable_type IS NULL THEN 1 ELSE 0 END) AS rideable_type_nulls,
+  SUM(CASE WHEN started_at IS NULL THEN 1 ELSE 0 END) AS started_at_nulls,
+  SUM(CASE WHEN ended_at IS NULL THEN 1 ELSE 0 END) AS ended_at_nulls,
+  SUM(CASE WHEN start_station_name IS NULL THEN 1 ELSE 0 END) AS start_station_name_nulls,
+  SUM(CASE WHEN start_station_id IS NULL THEN 1 ELSE 0 END) AS start_station_id_nulls,
+  SUM(CASE WHEN end_station_name IS NULL THEN 1 ELSE 0 END) AS end_station_name_nulls,
+  SUM(CASE WHEN end_station_id IS NULL THEN 1 ELSE 0 END) AS end_station_id_nulls,
+  SUM(CASE WHEN start_lat IS NULL THEN 1 ELSE 0 END) AS start_lat_nulls,
+  SUM(CASE WHEN start_lng IS NULL THEN 1 ELSE 0 END) AS start_lng_nulls,
+  SUM(CASE WHEN end_lat IS NULL THEN 1 ELSE 0 END) AS end_lat_nulls,
+  SUM(CASE WHEN end_lng IS NULL THEN 1 ELSE 0 END) AS end_lng_nulls,
+  SUM(CASE WHEN member_casual IS NULL THEN 1 ELSE 0 END) AS member_casual_nulls
+ FROM 
+	tripdata_2023
+
+--COUNTING THE TOTAL NUMBER OF NULLS 
+
+SELECT
+  COUNT(*) AS total_nulls
+FROM 
+	tripdata_2023
+WHERE 
+	ride_id IS NULL OR
+	rideable_type IS NULL OR
+	started_at IS NULL OR
+	ended_at IS NULL OR
+	start_station_name IS NULL OR
+	start_station_id IS NULL OR
+	end_station_name IS NULL OR
+	end_station_id IS NULL OR
+	start_lat IS NULL OR
+	start_lng IS NULL OR
+	end_lat IS NULL OR
+	end_lng IS NULL OR
+	member_casual IS NULL
+
+--CHECKING THE NUMBER OF OUTLIERS THAT ARE MORE THAN DAY OF RENTAL AND LESS THAN A MINUTE OF RENTAL 
+
+SELECT 
+	COUNT(*) AS number_of_outliers 
+FROM 
+	tripdata_2023
+WHERE 
+DATEDIFF(HOUR, started_at, ended_at) > 24 OR 
+DATEDIFF(MINUTE, started_at, ended_at) <= 1
+
+--CHECKING THE TOTAL NUMBERS OF INCONSISTENT DATE (OUTLIERS AND NULLS)  
+
+SELECT 
+	COUNT(*) AS number_of_outliers 
+FROM 
+	tripdata_2023
+WHERE 
+	DATEDIFF(HOUR, started_at, ended_at) > 24  OR 
+	DATEDIFF(MINUTE, started_at, ended_at) <= 1 OR
+	ride_id IS NULL OR
+	rideable_type IS NULL OR
+	started_at IS NULL OR
+	ended_at IS NULL OR
+	start_station_name IS NULL OR
+	start_station_id IS NULL OR
+	end_station_name IS NULL OR
+	end_station_id IS NULL OR
+	member_casual IS NULL
+
+
+	
