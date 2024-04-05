@@ -62,7 +62,7 @@ After downloading the dataset for analysis. I first examine each data set which 
 - Adding column name Month into the Combine data and inserting values 
 - Adding column name days into the Combine data and inserting values 
 
-### Analyze Phase 
+## Analyze Phase 
 For this phase i extracted some of the following data to answer the business questions: 
 - Total Number of Members vs Casual
 - Number of Rideable bikes used by Members and Casual
@@ -71,7 +71,7 @@ For this phase i extracted some of the following data to answer the business que
 - Average Trip Duration of Members per Month/Days/Days
 - Top Start Startion and End Station of Members and Casual
 
-### Share Phase 
+## Share Phase 
 
 ![Member vs Casual](https://github.com/nizekid/Google-Data-Analytics-Capstone-Project-Bikes/assets/146612858/cad074a2-35b0-492f-9434-a603b2c226de)
 - there are 35% of casual rider
