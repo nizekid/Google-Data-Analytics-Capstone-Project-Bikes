@@ -1,0 +1,193 @@
+--checking the tripdata_2023 table 
+SELECT *
+FROM tripdata_2023;
+
+
+--MEMBERS VS CASUAL VS TOTAL NUMBER OF RIDERS 
+
+SELECT 
+	member_casual,
+	COUNT(member_casual) rider_count
+FROM 
+	tripdata_2023
+GROUP BY
+	member_casual;
+
+--PERCENTAGE OF EACH RIDEABLE BIKES 
+SELECT 
+	rideable_type,
+	ROUND(CAST(r.rideable_count AS DECIMAL(10,2)) / CAST(t.total_rideable AS DECIMAL(10,2))* 100, 2) AS percentage
+FROM
+(
+SELECT 
+	rideable_type,
+	COUNT(rideable_type) rideable_count
+FROM 
+	tripdata_2023
+GROUP BY
+	rideable_type
+	) as r
+JOIN (
+  SELECT COUNT(*) AS total_rideable
+  FROM tripdata_2023
+) AS t ON 1=1
+ORDER BY 
+ROUND(CAST(r.rideable_count AS DECIMAL(10,2)) / CAST(t.total_rideable AS DECIMAL(10,2))* 100, 2) DESC;
+
+--PERCENTAGE OF MEMBER VS CASUAL RIDEABLE BIKE
+SELECT 
+	member_casual,
+	rideable_type,
+	ROUND(CAST(r.rideable_count AS DECIMAL(10,2)) / CAST(t.total_rideable AS DECIMAL(10,2))* 100, 2) AS percentage
+FROM
+(
+SELECT 
+	member_casual,
+	rideable_type,
+	COUNT(member_casual) rideable_count
+FROM 
+	tripdata_2023
+GROUP BY
+	rideable_type,
+	member_casual
+	) as r
+JOIN (
+  SELECT COUNT(*) AS total_rideable
+  FROM tripdata_2023
+) AS t ON 1=1
+ORDER BY 
+ROUND(CAST(r.rideable_count AS DECIMAL(10,2)) / CAST(t.total_rideable AS DECIMAL(10,2))* 100, 2) DESC;
+
+
+-- DISTRIBUTION OF MEMBERS VS CASUAL IN MONTHS 
+SELECT 
+	member_casual,
+	months_of_year,
+	COUNT(months_of_year) AS months
+FROM 
+	tripdata_2023
+GROUP BY 
+	months_of_year,
+	member_casual
+ORDER BY 
+COUNT(months_of_year) DESC;
+
+--DISTRIBUTION OF MEMBERS VS CASUAL IN SEASON
+SELECT 
+	member_casual,
+	SUM(CASE WHEN months_of_year IN ('December', 'January', 'February') THEN 1 ELSE 0 END) AS winter,
+	SUM(CASE WHEN months_of_year IN('March', 'April', 'May') THEN 1 ELSE 0 END) AS spring,
+	SUM(CASE WHEN months_of_year IN('June', 'July', 'August') THEN 1 ELSE 0 END) AS summer,
+	SUM(CASE WHEN months_of_year IN ('September', 'October', 'November') THEN 1 ELSE 0 END) AS fall
+FROM 
+	tripdata_2023
+GROUP BY 
+	member_casual;
+
+--DISTRIBUTION OF MEMBERS VS CASUAL PER DAY 
+SELECT 
+	member_casual,
+	days_of_week,
+	COUNT(member_casual) AS number_of_riders 
+FROM 
+	tripdata_2023
+GROUP BY 
+	member_casual,
+	days_of_week
+
+--DISTRIBUTION MEMBERS VS CASUAL RIDER PER HOURS 
+    
+SELECT 
+	member_casual, 
+	DATENAME(HOUR, started_at) AS time_date,
+	COUNT(member_casual) AS number_of_riders
+FROM
+	tripdata_2023
+GROUP BY 
+	member_casual,
+	DATENAME(HOUR, started_at);
+
+--AVERAGE TRIP DURATION MEMBER VS CAUSAL 
+
+SELECT 
+	member_casual, 
+	CAST(started_at AS DATE) AS dates,
+	AVG(DATEDIFF(MINUTE, started_at, ended_at)) AS avg_trip_duration,
+	days_of_week
+FROM
+	tripdata_2023
+GROUP BY
+	CAST(started_at AS DATE),
+	member_casual,
+	days_of_week;
+
+--POPULAR START STATION MEMBERS VS CASUAL TOP 5  
+--CASUAL 
+SELECT TOP 5
+	member_casual,
+	start_station_name,
+	start_lat,
+	start_lng,
+	COUNT(member_casual) AS number_of_riders 
+FROM 
+	tripdata_2023
+WHERE 
+	member_casual = 'casual'
+GROUP BY 
+	member_casual,
+	start_lat,
+	start_lng,
+	start_station_name
+ORDER BY 
+	COUNT(member_casual) DESC;
+
+--MEMBER 
+SELECT TOP 5
+	member_casual,
+	start_station_name,
+	start_lat,
+	start_lng,
+	COUNT(member_casual) AS number_of_riders 
+FROM 
+	tripdata_2023
+WHERE 
+	member_casual = 'member'
+GROUP BY 
+	member_casual,
+	start_lat,
+	start_lng,
+	start_station_name
+ORDER BY 
+	COUNT(member_casual) DESC;
+
+--POPULAR END STATION MEMBER VS CASUAL TOP 5
+--CASUAL
+SELECT TOP 5
+	member_casual,
+	end_station_name,
+	COUNT(member_casual) AS number_of_riders 
+FROM 
+	tripdata_2023
+WHERE 
+	member_casual = 'casual'
+GROUP BY 
+	member_casual,
+	end_station_name
+ORDER BY 
+	COUNT(member_casual) DESC;
+
+--MEMBER 
+
+SELECT TOP 5
+	member_casual,
+	end_station_name,
+	COUNT(member_casual) AS number_of_riders 
+FROM 
+	tripdata_2023
+WHERE 
+	member_casual = 'member'
+GROUP BY 
+	member_casual,
+	end_station_name
+ORDER BY 
+	COUNT(member_casual) DESC;
