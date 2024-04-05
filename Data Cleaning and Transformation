@@ -1,0 +1,59 @@
+--Deleting All the outliers within the data 
+
+DELETE
+FROM 
+	tripdata_2023
+WHERE 
+DATEDIFF(HOUR, started_at, ended_at) > 24 OR 
+DATEDIFF(MINUTE, started_at, ended_at) <= 1;
+
+--checking the total number of row after the deletion of outliers 
+
+SELECT COUNT(*) AS total_rows
+FROM tripdata_2023;
+
+--Deleting different number of characters used in the [ride_id] that is not 16 in characters 
+
+DELETE
+FROM tripdata_2023
+WHERE
+	NOT LEN(ride_id) = 16;
+
+--Deleting All the null values within the data 
+
+DELETE
+FROM 
+	tripdata_2023
+WHERE 
+	ride_id IS NULL OR
+	rideable_type IS NULL OR
+	started_at IS NULL OR
+	ended_at IS NULL OR
+	start_station_name IS NULL OR
+	start_station_id IS NULL OR
+	end_station_name IS NULL OR
+	end_station_id IS NULL OR
+	start_lat IS NULL OR
+	start_lng IS NULL OR
+	end_lat IS NULL OR
+	end_lng IS NULL OR
+	member_casual IS NULL;
+
+--Adding A Column called Month in the combined_Table 
+
+ALTER TABLE tripdata_2023
+ADD months_of_year varchar(50);
+
+--Inserting Values in the new created Month column 
+
+UPDATE tripdata_2023 SET months_of_year = DATENAME(MONTH, started_at);
+
+--Adding A Column called Month in the combined_Table 
+
+ALTER TABLE tripdata_2023
+ADD days_of_week varchar(50);
+
+--Inserting Values in the new created days column 
+
+UPDATE tripdata_2023 SET days_of_week = DATENAME(WEEKDAY, started_at);
+
